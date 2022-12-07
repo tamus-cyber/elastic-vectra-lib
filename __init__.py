@@ -3,7 +3,7 @@
 from elasticsearch import Elasticsearch
 
 
-class ElasticVectra(object):
+class ElasticVectra():
     """Elastic-Vectra Python library."""
 
     def __init__(self, host, username, password, verify_certs=True):
