@@ -6,16 +6,25 @@ from elasticsearch import Elasticsearch
 class ElasticVectra():
     """Elastic-Vectra Python library."""
 
-    def __init__(self, host, username, password, verify_certs=True):
+    def __init__(self, username=None, password=None, verify_certs=True, host=None, cloud_id=None):
         """Initialize Elastic-Vectra Python library."""
         self.host = host
+        self.cloud_id = cloud_id
         self.username = username
         self.password = password
-        self.client = Elasticsearch(
-            self.host,
-            basic_auth=(self.username, self.password),
-            verify_certs=verify_certs,
-        )
+        # If cloud_id is set, use it
+        if cloud_id:
+            self.client = Elasticsearch(
+                http_auth=(self.username, self.password),
+                cloud_id=cloud_id
+            )
+        # Otherwise, use host
+        else:
+            self.client = Elasticsearch(
+                basic_auth=(self.username, self.password),
+                verify_certs=verify_certs,
+                hosts=[self.host]
+            )
 
     def get_info(self):
         """Get Elastic info."""
