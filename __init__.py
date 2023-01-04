@@ -1,18 +1,11 @@
 """Main file for Elastic-Vectra Python library."""
 
-import os
-import json
 from elasticsearch import Elasticsearch
+from .mapping import _map_vectra_keys_to_ecs
 
 
 class ElasticVectra():
     """Elastic-Vectra Python library."""
-
-    # Set the class variables
-    # Read in the mapping file
-    mapping_file = os.path.join(os.path.dirname(__file__), 'mapping.json')
-    with open(mapping_file, encoding='utf-8') as f:
-        VECTRA_TO_ECS_MAPPING = json.load(f)
 
     def __init__(self, username=None, password=None, verify_certs=True, host=None, cloud_id=None):  # pylint: disable=too-many-arguments
         """Initialize Elastic-Vectra Python library."""
@@ -58,11 +51,4 @@ def map_vectra_keys_to_ecs(detection: dict) -> dict:
         dict: A detection with ECS keys.
     """
 
-    # Create a new detection with ECS keys
-    ecs_detection = {}
-
-    # Map the keys
-    for key, value in detection.items():
-        ecs_detection[ElasticVectra.VECTRA_TO_ECS_MAPPING.get(key, key)] = value
-
-    return ecs_detection
+    return _map_vectra_keys_to_ecs(detection)

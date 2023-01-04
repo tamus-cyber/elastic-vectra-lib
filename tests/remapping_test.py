@@ -10,7 +10,7 @@ class TestRemapping:
     def test_remapping(self):
         """ Test the map_vectra_keys_to_ecs method """
         test_detection = {
-            "unit_test_key": "unit_test_val"
+            "id": "test_id",
         }
         remapped_detection = map_vectra_keys_to_ecs(test_detection)
-        assert remapped_detection.get('unit_test_key_remapped', False)  # nosec B101
+        assert remapped_detection['event']['id'] == "test_id"  # nosec B101
