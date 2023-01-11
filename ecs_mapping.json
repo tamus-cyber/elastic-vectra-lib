@@ -1,30 +1,30 @@
 {
     "vectra": {
-        "id": "event.id",
-        "grouped_details.target_domains": "destination.address",
-        "grouped_details.events.target_domains": "destination.address",
-        "summary.target_domains": "destination.address",
-        "detection_category": "event.category",
-        "detection_type": "event.type",
-        "first_timestamp": [
-            "@timestamp",
-            "event.start"
+        "event.id": "id",
+        "destination.address": [
+            "grouped_details.target_domains",
+            "grouped_details.events.target_domains",
+            "summary.target_domains"
         ],
-        "groups": "agent.groups",
-        "last_timestamp": "event.end",
-        "proto": "network.protocol",
-        "sensor_name": "observer.name",
-        "src_host.id": "host.id",
-        "src_host.ip": "host.ip",
-        "src_host.name": "host.name",
-        "src_ip": "source.ip",
+        "event.category": "detection_category",
+        "event.type": "detection_type",
+        "@timestamp": "first_timestamp",
+        "event.start": "first_timestamp",
+        "agent.groups": "groups",
+        "event.end": "last_timestamp",
+        "network.protocol": "proto",
+        "observer.name": "sensor_name",
+        "host.id": "src_host.id",
+        "host.ip": "src_host.ip",
+        "host.name": "src_host.name",
+        "source.ip": "src_ip",
         "tags": "tags",
-        "total_bytes_sent": "source.bytes",
-        "total_bytes_rcvd": "destination.bytes",
-        "url": "event.url"
+        "source.bytes": "total_bytes_sent",
+        "destination.bytes": "total_bytes_rcvd",
+        "event.url": "url"
     },
     "static": {
-        "Vectra": "observer.vendor",
-        "NIDS": "observer.type"
+        "observer.vendor": "Vectra",
+        "observer.type": "NIDS"
     }
 }
