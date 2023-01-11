@@ -8,7 +8,6 @@ first_timestamp,event.start,parse_timestamp,ISO8601,The timestamp when the event
 groups,agent.groups,to_array,,The groups that the detection or host are in,rename,keyword,false
 is_targeting_key_asset,,to_boolean,,Indicates whether the detection targets a key asset,copy,bool,false
 last_timestamp,event.end,parse_timestamp,ISO8601,The timestamp when the event was last detected,rename,date,false
-notes,,to_array,,An array of all notes on the host,copy,text,false
 proto,network.protocol,to_string,,Protocol used in the communications,rename,keyword,false
 sensor_name,observer.serial_number,to_string,,The name of sensor where this flow was detected from (appears to just be the serial number),rename,keyword,false
 src_host.ip,host.ip,to_string,,Undocumented in Vectra API manual,rename,ip,false
