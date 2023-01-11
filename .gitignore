@@ -131,3 +131,4 @@ dmypy.json
 # Detection JSON files
 detection_files
 detection_files*
+combined.json

@@ -42,9 +42,12 @@ def walk_tree(tree: dict|list):
     yield from recursive_walk(tree, [])
 
 
-def search_along_path(tree: dict | list, path: list | str):
-    """walk through a nested dict/list structure based on the given path,
-    branching out at lists when it detects them
+def search_along_path(tree: dict | list, path: list | str) -> list:
+    """Walk through a nested dict/list structure based on the given path,
+    branching out at lists when it detects them, and return a list of results 
+    that match the given path. 
+    
+    Filter out values that are None, empty lists, empty dicts or empty strings.
     
     Parameters:
         tree (dict | list): a nested structure of dictionaries and lists
@@ -85,17 +88,33 @@ def search_along_path(tree: dict | list, path: list | str):
             if current_path_key in tree_:
                 yield from search_along_path(tree_[current_path_key], remaining_path)
 
-    # return a list of the search results, filtering out NoneType results
-    return [result for result in recursive_search(tree, path) if result is not None]
+    # return a list of the search results, filtering undesired values
+    return [result for result in recursive_search(tree, path) if result not in (None, [], {}, '')]
 
 
-def add_by_path(structure: dict, path: list, value):
-    """add to a dictionary by path
-    This one does not work for lists"""
-    reference = structure
+def get_by_path(tree: dict, path: list | str):
+    """walk through a nested dictionary and return the value at the end of the path"""
+    if isinstance(path, str):
+        path = path.split('.')
+
+    current_branch = tree
     for key in path[:-1]:
-        reference = reference.setdefault(key, {})
-    reference[path[-1]] = value
+        current_branch = current_branch.setdefault(key, {})
+
+    leaf = current_branch.setdefault(path[-1], None)
+    return leaf
+
+
+def set_by_path(tree: dict, path: list | str, value: Any):
+    """walk through a nested dictionary and set the value at the end of the path"""
+    if isinstance(path, str):
+        path = path.split('.')
+
+    current_branch = tree
+    for key in path[:-1]:
+        current_branch = current_branch.setdefault(key, {})
+
+    current_branch[path[-1]] = value
 
 
 if __name__ == '__main__':

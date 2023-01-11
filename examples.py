@@ -1,8 +1,14 @@
 import json
 import time
 from rich import print
-from tree_walking import search_along_path
+from tree_utils import search_along_path
+import tree_utils
 from parse_sample import get_sample_detections
+from mapping import _map_vectra_keys_to_ecs
+
+def _get_ecs_map():
+    with open('ecs_mapping.json', 'r') as f:
+        return json.load(f)
 
 def search_path_example():
     detections = get_sample_detections()
@@ -19,5 +25,18 @@ def search_path_example():
     print(search_results)
     print(f'Searched {len(detections)} detections in {toc - tic:0.6f} seconds')
 
+def map_vectra_to_ecs_example():
+    # detection = get_sample_detections()[3]
+
+    with open('detection_files/108677.json', 'r') as f:
+        detection = json.load(f)
+
+    ecs_map = _get_ecs_map()
+
+    ecs_document = _map_vectra_keys_to_ecs(detection, ecs_map)
+    print(ecs_document)
+
+
 if __name__ == '__main__':
-    search_path_example()
+    # search_path_example()
+    map_vectra_to_ecs_example()

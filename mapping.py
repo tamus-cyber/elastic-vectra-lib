@@ -1,29 +1,36 @@
 """Vectra to ECS mapping file"""
 import json
 from collections import defaultdict
+from tree_utils import search_along_path, set_by_path
 
 
-def _nested_default_dict():
-    """Dictionary that creates an empty dictionary if the key doesn't exist"""
-    return defaultdict(_nested_default_dict)
+def _map_vectra_keys_to_ecs(vectra_detection: dict, vectra_to_ecs_map: dict) -> dict:
+    ecs_documnent = {}
 
+    # Map the data that pulls from data in the vectra detection json
+    for ecs_destination_path, vectra_source_paths in vectra_to_ecs_map['vectra'].items():
+        # Vectra_source_paths can be a list or a single value. This handles both cases.
+        if not isinstance(vectra_source_paths, list):
+            vectra_source_paths = [vectra_source_paths]
 
-def _map_vectra_keys_to_ecs(detection: dict) -> dict:
-    """Map Vectra keys to ECS keys.
+        # Grab data from all the source paths and combine them into one list
+        values_to_add = []
+        for vectra_source_path in vectra_source_paths:
+            values_to_add.extend(search_along_path(vectra_detection, vectra_source_path))
 
-    Args:
-        detection (dict): Converts the keys of a Vectra detection to ECS keys.
+        # If there is no data to add, don't add the key to the ecs_document at all
+        if not values_to_add:
+            continue
 
-    Returns:
-        dict: A detection with ECS keys.
-    """
-    # Initialize the mapping
-    ecs_mapping = _nested_default_dict()
+        # If there is only one value, don't wrap it in a list
+        if len(values_to_add) == 1:
+            values_to_add = values_to_add[0]
+        
+        # Add the values to the ecs_document at the specified path
+        set_by_path(ecs_documnent, ecs_destination_path, values_to_add)
 
-    # Map the keys
-    ecs_mapping['event']['id'] = detection['id']
+    # Map the static data
+    for ecs_destination_path, value in vectra_to_ecs_map['static'].items():
+        set_by_path(ecs_documnent, ecs_destination_path, value)
 
-    # Convert all of the defaultdicts to dicts
-    ecs_mapping = json.loads(json.dumps(ecs_mapping))
-
-    return ecs_mapping
+    return ecs_documnent
