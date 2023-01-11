@@ -132,3 +132,4 @@ dmypy.json
 detection_files
 detection_files*
 combined.json
+.private_mapping.csv

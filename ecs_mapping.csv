@@ -1,0 +1,25 @@
+source_field,destination_field,format_action,timestamp_format,notes,copy_action,data_type,is_static
+certainty,,to_integer,,The certainty score attributed to the detection,copy,long,false
+description,,to_string,,System generated description of the event,copy,text,false
+detection_category,event.category,to_string,,The category of the vname attack detected,rename,keyword,false
+detection_type,event.type,to_string,,The name of the threat detected,rename,keyword,false
+first_timestamp,@timestamp,parse_timestamp,ISO8601,The timestamp when the event was first detected,rename,date,false
+first_timestamp,event.start,parse_timestamp,ISO8601,The timestamp when the event was first detected (duplicate),rename,date,false
+groups,agent.groups,to_array,,The groups that the detection or host are in,rename,keyword,false
+is_targeting_key_asset,,to_boolean,,Indicates whether the detection targets a key asset,copy,bool,false
+last_timestamp,event.end,parse_timestamp,ISO8601,The timestamp when the event was last detected,rename,date,false
+notes,,to_array,,An array of all notes on the host,copy,text,false
+proto,network.protocol,to_string,,Protocol used in the communications,rename,keyword,false
+sensor_name,observer.serial_number,to_string,,The name of sensor where this flow was detected from (appears to just be the serial number),rename,keyword,false
+src_host.ip,host.ip,to_string,,Undocumented in Vectra API manual,rename,ip,false
+src_host.name,host.name,to_string,,Undocumented in Vectra API manual,rename,keyword,false
+src_ip,source.ip,to_string,,The source IP address of the host attributed to the security event,rename,ip,false
+total_bytes_sent,source.bytes,to_integer,,Total bytes sent by the client,rename,long,false
+total_bytes_rcvd,destination.bytes,to_integer,,Total bytes received by the client,rename,long,false
+threat,,to_integer,,The threat score attributed to the detection,rename,long,false
+url,event.url,to_string,,The URL that links directly to this record via the API,rename,keyword,false
+grouped_details.target_domains,destination.address,to_array,,List of target domains,rename,keyword,false
+grouped_details.events.target_domains,destination.address,to_array,,List of target domains,rename,keyword,false
+summary.target_domains,destination.address,to_array,,List of target domains,rename,keyword,false
+vectra,observer.vendor,to_string,,Static value: vectra,rename,keyword,true
+nids,observer.type,to_string,,Static value: nids,rename,keyword,true
