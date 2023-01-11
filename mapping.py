@@ -1,10 +1,10 @@
 """Vectra to ECS mapping file"""
-import json
-from collections import defaultdict
-from tree_utils import search_along_path, set_by_path
+from typing import Any
+from searching import search_detection
 
 
-def _map_vectra_keys_to_ecs(vectra_detection: dict, vectra_to_ecs_map: dict) -> dict:
+def vectra_to_ecs(vectra_detection: dict, vectra_to_ecs_map: dict) -> dict:
+    """Convert a Vectra detection to an ECS document"""
     ecs_documnent = {}
 
     # Map the data that pulls from data in the vectra detection json
@@ -13,24 +13,36 @@ def _map_vectra_keys_to_ecs(vectra_detection: dict, vectra_to_ecs_map: dict) -> 
         if not isinstance(vectra_source_paths, list):
             vectra_source_paths = [vectra_source_paths]
 
-        # Grab data from all the source paths and combine them into one list
-        values_to_add = []
-        for vectra_source_path in vectra_source_paths:
-            values_to_add.extend(search_along_path(vectra_detection, vectra_source_path))
+        # Search for data in the Vectra detection json along the specified paths
+        search_results = []
+        for path in vectra_source_paths:
+            search_results.extend(search_detection(vectra_detection, path))
 
         # If there is no data to add, don't add the key to the ecs_document at all
-        if not values_to_add:
+        if not search_results:
             continue
 
-        # If there is only one value, don't wrap it in a list
-        if len(values_to_add) == 1:
-            values_to_add = values_to_add[0]
+        # Many fields will only have one value. If so, unwrap it from the list.
+        if len(search_results) == 1:
+            search_results = search_results[0]
         
         # Add the values to the ecs_document at the specified path
-        set_by_path(ecs_documnent, ecs_destination_path, values_to_add)
+        add_to_ecs_document(ecs_documnent, ecs_destination_path, search_results)
 
     # Map the static data
     for ecs_destination_path, value in vectra_to_ecs_map['static'].items():
-        set_by_path(ecs_documnent, ecs_destination_path, value)
+        add_to_ecs_document(ecs_documnent, ecs_destination_path, value)
 
     return ecs_documnent
+
+
+def add_to_ecs_document(ecs_document: dict, path: list | str, value: Any):
+    """walk through a nested dictionary and set the value at the end of the path"""
+    if isinstance(path, str):
+        path = path.split('.')
+
+    current_branch = ecs_document
+    for key in path[:-1]:
+        current_branch = current_branch.setdefault(key, {})
+
+    current_branch[path[-1]] = value
