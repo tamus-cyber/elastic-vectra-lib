@@ -74,7 +74,7 @@ def add_to_ecs_document(ecs_document: dict, path: str | list, data_points: Any |
     current_branch[path[-1]] = leaf
 
 
-def format_data(data_points, format_action: str):
+def format_data(data_points, format_action: str, strict: bool = True):
     """Format the data_points according to the format_action
     
     The formatting here is just so that the JSON we send to Elastic plays nice
@@ -87,13 +87,30 @@ def format_data(data_points, format_action: str):
         data (Any): the data to be formatted. Can be a single value or a list of values
         format_action (str): the action to perform on the data
             'to_integer', 'to_string', 'to_boolean': ensure the data to the specified type, if it is not already
-            'to_array': forces the output to be a list
-                (normally, if there is only one value, it will be returned as a single value)
-            'parse_timestamp': convert the data to a timestamp
+            'parse_timestamp': treated the same as to_string, Elastic will be parsing this on it's end, just ensure it is a string
+        'strict': if True, raise an error if the data cannot be formatted. If False, return any uncastable data as is
 
     Returns:
         (Any): the formatted data
     """
+    def cast(type_: type, value: Any):
+        """Cast the data to the specified type
+        If strict is False, return the value unchaned when it can't be casted.
+        
+        The point of this function is to allow sending malformed data to Elastic..
+        This allows Elastic to attempt to parse the data on it's end, allowing the burden to 
+        be shifted to the Elastic configuration to decide what happens when it gets data
+        that doesn't match the types it expected.
+
+        Tyler asked me to do it this way.
+        """
+        try:
+            return type_(value)
+        except ValueError as e:
+            if strict:
+                raise e
+            return value
+
     # if there is no format_action, return the data_points as is
     if not format_action:
         return data_points
@@ -103,13 +120,13 @@ def format_data(data_points, format_action: str):
         data_points = [data_points]
 
     if format_action == 'to_integer':
-        data_points = [int(data_point) for data_point in data_points]
+        data_points = [cast(int, data_point) for data_point in data_points]
     elif format_action in ('to_string', 'parse_timestamp'):
-        data_points = [str(data_point) for data_point in data_points]
+        data_points = [cast(str, data_point) for data_point in data_points]
     elif format_action == 'to_boolean':
-        data_points = [bool(data_point) for data_point in data_points]
+        data_points = [cast(bool, data_point) for data_point in data_points]
     
-    if format_action != 'to_array' and len(data_points) == 1:
+    if len(data_points) == 1:
         data_points = data_points[0]
 
     return data_points
