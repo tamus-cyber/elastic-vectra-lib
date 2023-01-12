@@ -46,5 +46,14 @@ def search_detection(tree: dict | list, path: list | str) -> list:
             if current_path_key in tree_:
                 yield from search_detection(tree_[current_path_key], remaining_path)
 
-    # return a list of the search results, filtering undesired values
-    return [result for result in recursive_search(tree, path) if result not in (None, [], {}, '')]
+    # get a list of the search results, filter undesired values
+    results = [result for result in recursive_search(tree, path) if result not in (None, [], {}, '')]
+
+    # attempt to remove duplicates
+    try:
+        results = list(set(results))
+    except TypeError:
+        # a TypeError means that the leaf contains unhashable types, so we can't deduplicate. Return the results as is
+        pass
+
+    return results

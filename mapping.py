@@ -28,10 +28,11 @@ def map_vectra_to_ecs(vectra_detection: dict, mapping: list[dict[str, str]]):
         formatted_results = format_data(search_results, map_item['format_action'])
 
         # if the destination_field is not specified, use the source_field
-        destination_field = map_item['destination_field'] if map_item['destination_field'] else map_item['source_field']
+        destination_field: str = map_item['destination_field'] if map_item['destination_field'] else map_item['source_field']
 
         # add the data to the ecs_document
-        add_to_ecs_document(ecs_document, destination_field, formatted_results)
+        force_array: bool = map_item['format_action'].lower() == 'to_array'
+        add_to_ecs_document(ecs_document, destination_field, formatted_results, force_array)
 
     return ecs_document
 
@@ -57,13 +58,20 @@ def add_to_ecs_document(ecs_document: dict, path: str | list, data_points: Any |
         leaf = [leaf]
     # add the data_points to the leaf
     leaf.extend(data_points)
+
+    # deduplicate items in the leaf if possible
+    try:
+        leaf = list(set(leaf))
+    except TypeError:
+        # a TypeError means that the leaf contains unhashable types, so we can't deduplicate
+        pass
+
     # if the leaf has only one value (and force_array is False), unwrap it
     if not force_array and len(leaf) == 1:
         leaf = leaf[0]
 
     # set the leaf to the ecs_document
     current_branch[path[-1]] = leaf
-
 
 
 def format_data(data_points, format_action: str):
