@@ -4,6 +4,8 @@ certainty,certainty_score,to_integer,,The certainty score attributed to the dete
 grouped_details.target_domains,destination.address,to_string,,List of target domains,rename,keyword,false
 grouped_details.events.target_domains,destination.address,to_string,,List of target domains,rename,keyword,false
 summary.target_domains,destination.address,to_string,,List of target domains,rename,keyword,false
+summary.dst_ips,destination.address,filter_ip,,The source IP address of the host attributed to the security event,rename,ip,false
+grouped_details.dst_ips,destination.address,filter_ip,,The source IP address of the host attributed to the security event,rename,ip,false
 summary.bytes_received,destination.bytes,to_integer,,Total bytes received by the client,rename,long,false
 grouped_details.bytes_received,destination.bytes,to_integer,,Total bytes received by the client,rename,long,false
 grouped_details.target_domains,destination.domain,to_string,,List of target domains,rename,keyword,false
