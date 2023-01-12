@@ -1,0 +1,65 @@
+{
+    "template": {
+        "mappings": {
+            "_routing": {
+                "required": false
+            },
+            "_source": {
+                "excludes": [],
+                "includes": [],
+                "enabled": true
+            },
+            "dynamic": false,
+            "dynamic_templates": [],
+            "properties": {
+                "groups.description": {
+                    "type": "text"
+                },
+                "certainty_score": {
+                    "coerce": true,
+                    "index": true,
+                    "ignore_malformed": false,
+                    "store": false,
+                    "type": "integer",
+                    "doc_values": true
+                },
+                "groups.name": {
+                    "eager_global_ordinals": false,
+                    "norms": false,
+                    "index": true,
+                    "store": false,
+                    "type": "keyword",
+                    "split_queries_on_whitespace": false,
+                    "index_options": "docs",
+                    "doc_values": true
+                },
+                "groups.type": {
+                    "type": "keyword"
+                },
+                "description": {
+                    "type": "text"
+                },
+                "threat_score": {
+                    "coerce": true,
+                    "index": true,
+                    "ignore_malformed": false,
+                    "store": false,
+                    "type": "integer",
+                    "doc_values": true
+                },
+                "groups.id": {
+                    "type": "integer"
+                },
+                "is_targeting_key_asset": {
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "index_patterns": [
+        "vectra-detections*"
+    ],
+    "composed_of": [
+        ".alerts-ecs-mappings"
+    ]
+}

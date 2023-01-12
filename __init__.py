@@ -1,7 +1,7 @@
 """Main file for Elastic-Vectra Python library."""
 
 from elasticsearch import Elasticsearch
-from .mapping import _map_vectra_keys_to_ecs
+from .mapping import map_vectra_to_ecs, get_default_mapping, add_to_ecs_document
 
 
 class ElasticVectra():
@@ -27,28 +27,30 @@ class ElasticVectra():
                 verify_certs=verify_certs,
                 hosts=[self.host]
             )
+        self.mapping = get_default_mapping()
 
     def get_info(self):
         """Get Elastic info."""
         return self.client.info()
 
-    def send_detection(self, detection: dict, index: str, pipeline: str):
-        """Send a detection to Elastic."""
+    def send_detection(self, detection: dict, index: str, pipeline: str = None, mapped: bool = True, extra_fields: dict = None):
+        """Send a detection to Elastic.
+
+        Args:
+            detection (dict): Vectra detection to send to Elastic
+            index (str): Index to send detection to
+            pipeline (str): Pipeline to use (optional)
+            mapped (bool): If True, map the detection before sending. Otherwise, send as-is.
+            extra_fields (dict): Extra fields to add to the mapped Elastic document before sending. (optional)
+                                Should be a dictionary of the form {path: value}
+        """
+        # If mapped is True, map the detection
+        if mapped:
+            detection = map_vectra_to_ecs(detection, self.mapping)
+
+        # If extra_fields is set, add them to the detection
+        if extra_fields:
+            for path, value in extra_fields.items():
+                add_to_ecs_document(detection, path, value)
+
         self.client.index(index=index, document=detection, pipeline=pipeline)
-
-    def send_detections(self, detections: list, index: str, pipeline: str):
-        """Send a list of detections to Elastic."""
-        for detection in detections:
-            self.send_detection(detection, index, pipeline)
-
-def map_vectra_keys_to_ecs(detection: dict) -> dict:
-    """Map Vectra keys to ECS keys.
-
-    Args:
-        detection (dict): Converts the keys of a Vectra detection to ECS keys.
-
-    Returns:
-        dict: A detection with ECS keys.
-    """
-
-    return _map_vectra_keys_to_ecs(detection)

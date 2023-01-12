@@ -127,3 +127,21 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Detection JSON files
+detection_files
+detection_files*
+combined.json
+
+# Secrets
+.private_mapping.csv
+
+# CSV/Excel lock files
+.~lock*
+
+# Internal testing
+examples.py
+*_test_map.json
+parse_sample.py
+todo.md
+internal/
