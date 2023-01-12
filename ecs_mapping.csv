@@ -32,6 +32,7 @@ grouped_details.events.sessions.app_protocol,network.protocol,to_string,,Protoco
 sensor_name,observer.serial_number,to_string,,The name of sensor where this flow was detected from (appears to just be the serial number),rename,keyword,false
 nids,observer.type,to_string,,Static value: nids,rename,keyword,true
 vectra,observer.vendor,to_string,,Static value: vectra,rename,keyword,true
+src_ip,source.address,filter_ip,,The source IP address of the host attributed to the security event,rename,ip,false
 grouped_details.src_host.name,source.address,to_string,,Undocumented in Vectra API manual,rename,keyword,false
 grouped_details.src_host.ip,source.address,to_string,,Undocumented in Vectra API manual,rename,keyword,false
 grouped_details.bytes_sent,source.bytes,to_integer,,Total bytes sent by the client,rename,long,false
