@@ -9,8 +9,8 @@ grouped_details.bytes_received,destination.bytes,to_integer,,Total bytes receive
 grouped_details.target_domains,destination.domain,to_string,,List of target domains,rename,keyword,false
 grouped_details.events.target_domains,destination.domain,to_string,,List of target domains,rename,keyword,false
 summary.target_domains,destination.domain,to_string,,List of target domains,rename,keyword,false
-summary.dst_ips,destination.ip,to_string,,The source IP address of the host attributed to the security event,rename,ip,false
-grouped_details.dst_ips,destination.ip,to_string,,The source IP address of the host attributed to the security event,rename,ip,false
+summary.dst_ips,destination.ip,filter_ip,,The source IP address of the host attributed to the security event,rename,ip,false
+grouped_details.dst_ips,destination.ip,filter_ip,,The source IP address of the host attributed to the security event,rename,ip,false
 8.6.0,ecs.version,to_string,,https://www.elastic.co/guide/en/ecs/current/ecs-ecs.html,rename,keyword,true
 detection_category,event.category,to_string,,The category of the vname attack detected,rename,keyword,false
 last_timestamp,event.end,parse_timestamp,ISO8601,The timestamp when the event was last detected,rename,date,false
@@ -21,8 +21,8 @@ src_host.name,host.hostname,to_string,,Undocumented in Vectra API manual,rename,
 grouped_details.src_host.name,host.hostname,to_string,,Undocumented in Vectra API manual,rename,keyword,false
 src_host.id,host.id,to_string,,Undocumented in Vectra API manual,rename,long,false
 grouped_details.src_host.id,host.id,to_string,,Undocumented in Vectra API manual,rename,long,false
-src_host.ip,host.ip,to_string,,Undocumented in Vectra API manual,rename,ip,false
-grouped_details.src_host.ip,host.ip,to_string,,Undocumented in Vectra API manual,rename,ip,false
+src_host.ip,host.ip,filter_ip,,Undocumented in Vectra API manual,rename,ip,false
+grouped_details.src_host.ip,host.ip,filter_ip,,Undocumented in Vectra API manual,rename,ip,false
 grouped_details.protocol,network.protocol,to_string,,Protocol used in the communications,rename,keyword,false
 summary.protocols,network.protocol,to_string,,Protocol used in the communications,rename,keyword,false
 grouped_details.events.sessions.protocol,network.protocol,to_string,,Protocol used in the communications,rename,keyword,false
@@ -35,8 +35,8 @@ grouped_details.src_host.ip,source.address,to_string,,Undocumented in Vectra API
 grouped_details.bytes_sent,source.bytes,to_integer,,Total bytes sent by the client,rename,long,false
 summary.bytes_sent,source.bytes,to_integer,,Total bytes sent by the client,rename,long,false
 grouped_details.src_host.name,source.domain,to_string,,Undocumented in Vectra API manual,rename,keyword,false
-src_ip,source.ip,to_string,,The source IP address of the host attributed to the security event,rename,ip,false
-grouped_details.src_host.ip,source.ip,to_string,,Undocumented in Vectra API manual,rename,ip,false
+src_ip,source.ip,filter_ip,,The source IP address of the host attributed to the security event,rename,ip,false
+grouped_details.src_host.ip,source.ip,filter_ip,,Undocumented in Vectra API manual,rename,ip,false
 threat,threat_score,to_integer,,The threat score attributed to the detection,rename,long,false
 description,,to_string,,System generated description of the event,copy,text,false
 groups.name,,to_string,,Name of the groups that the detection or host are in,rename,keyword,false
