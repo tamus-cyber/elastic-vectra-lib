@@ -1,15 +1,15 @@
 source_field,destination_field,format_action,timestamp_format,notes,copy_action,data_type,is_static
 created_timestamp,@timestamp,parse_timestamp,ISO8601,The timestamp when the event was first detected,rename,date,false
-grouped_details.target_domains,destination.address,to_array,,List of target domains,rename,keyword,false
-grouped_details.events.target_domains,destination.address,to_array,,List of target domains,rename,keyword,false
-summary.target_domains,destination.address,to_array,,List of target domains,rename,keyword,false
+grouped_details.target_domains,destination.address,to_string,,List of target domains,rename,keyword,false
+grouped_details.events.target_domains,destination.address,to_string,,List of target domains,rename,keyword,false
+summary.target_domains,destination.address,to_string,,List of target domains,rename,keyword,false
 summary.bytes_received,destination.bytes,to_integer,,Total bytes received by the client,rename,long,false
 grouped_details.bytes_received,destination.bytes,to_integer,,Total bytes received by the client,rename,long,false
-grouped_details.bytes_sent,source.bytes,to_integer,,Total bytes sent by the client,rename,long,false
-summary.bytes_sent,source.bytes,to_integer,,Total bytes sent by the client,rename,long,false
-grouped_details.target_domains,destination.domain,to_array,,List of target domains,rename,keyword,false
-grouped_details.events.target_domains,destination.domain,to_array,,List of target domains,rename,keyword,false
-summary.target_domains,destination.domain,to_array,,List of target domains,rename,keyword,false
+grouped_details.target_domains,destination.domain,to_string,,List of target domains,rename,keyword,false
+grouped_details.events.target_domains,destination.domain,to_string,,List of target domains,rename,keyword,false
+summary.target_domains,destination.domain,to_string,,List of target domains,rename,keyword,false
+summary.dst_ips,destination.ip,to_string,,The source IP address of the host attributed to the security event,rename,ip,false
+grouped_details.dst_ips,destination.ip,to_string,,The source IP address of the host attributed to the security event,rename,ip,false
 8.6.0,ecs.version,to_string,,https://www.elastic.co/guide/en/ecs/current/ecs-ecs.html,rename,keyword,true
 detection_category,event.category,to_string,,The category of the vname attack detected,rename,keyword,false
 last_timestamp,event.end,parse_timestamp,ISO8601,The timestamp when the event was last detected,rename,date,false
@@ -17,6 +17,7 @@ first_timestamp,event.start,parse_timestamp,ISO8601,The timestamp when the event
 detection_type,event.type,to_string,,The name of the threat detected,rename,keyword,false
 url,event.url,to_string,,The URL that links directly to this record via the API,rename,keyword,false
 src_host.name,host.hostname,to_string,,Undocumented in Vectra API manual,rename,keyword,false
+src_host.id,host.id,to_integer,,Undocumented in Vectra API manual,rename,long,false
 src_host.ip,host.ip,to_string,,Undocumented in Vectra API manual,rename,ip,false
 grouped_details.protocol,network.protocol,to_string,,Protocol used in the communications,rename,keyword,false
 summary.protocols,network.protocol,to_string,,Protocol used in the communications,rename,keyword,false
@@ -25,10 +26,14 @@ grouped_details.events.sessions.app_protocol,network.protocol,to_string,,Protoco
 sensor_name,observer.serial_number,to_string,,The name of sensor where this flow was detected from (appears to just be the serial number),rename,keyword,false
 nids,observer.type,to_string,,Static value: nids,rename,keyword,true
 vectra,observer.vendor,to_string,,Static value: vectra,rename,keyword,true
-src_host.id,host.id,to_string,,Undocumented in Vectra API manual,rename,ip,false
+grouped_details.bytes_sent,source.bytes,to_integer,,Total bytes sent by the client,rename,long,false
+summary.bytes_sent,source.bytes,to_integer,,Total bytes sent by the client,rename,long,false
 src_ip,source.ip,to_string,,The source IP address of the host attributed to the security event,rename,ip,false
-certainty,,to_integer,,The certainty score attributed to the detection,copy,long,false
+certainty,certainty_score,to_integer,,The certainty score attributed to the detection,copy,long,false
 description,,to_string,,System generated description of the event,copy,text,false
-groups,,to_array,,The groups that the detection or host are in,rename,keyword,false
+groups.name,,to_string,,Name of the groups that the detection or host are in,rename,keyword,false
+groups.id,,to_integer,,ID of the groups that the detection or host are in,rename,keyword,false
+groups.description,,to_string,,Description of the groups that the detection or host are in,rename,keyword,false
+groups.type,,to_string,,Type of the groups that the detection or host are in,rename,keyword,false
 is_targeting_key_asset,,to_boolean,,Indicates whether the detection targets a key asset,copy,bool,false
-threat,,to_integer,,The threat score attributed to the detection,rename,long,false
+threat,threat_score,to_integer,,The threat score attributed to the detection,rename,long,false
