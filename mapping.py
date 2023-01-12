@@ -2,7 +2,7 @@
 import os
 from csv import DictReader
 from typing import Any
-from searching import search_detection
+from .searching import search_detection
 
 def map_vectra_to_ecs(vectra_detection: dict, mapping: list[dict[str, str]]):
     ecs_document = {}
