@@ -1,6 +1,7 @@
 """Vectra to ECS mapping file"""
 from typing import Any
 from searching import search_detection
+from csv import DictReader
 
 
 def vectra_to_ecs(vectra_detection: dict, vectra_to_ecs_map: dict) -> dict:
@@ -46,3 +47,17 @@ def add_to_ecs_document(ecs_document: dict, path: list | str, value: Any):
         current_branch = current_branch.setdefault(key, {})
 
     current_branch[path[-1]] = value
+
+
+def parse_csv(csv_file: str) -> list[dict]:
+    """Parse a CSV file into a list of dictionaries
+    
+    Args:
+        csv_file (str): The path to the CSV file to parse
+
+    Returns:
+        list[dict]: A list of dictionaries representing the CSV file
+    """
+
+    with open(csv_file, 'r') as file:
+        return list(DictReader(file))
