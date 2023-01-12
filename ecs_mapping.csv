@@ -35,8 +35,6 @@ grouped_details.src_host.ip,source.address,to_string,,Undocumented in Vectra API
 grouped_details.bytes_sent,source.bytes,to_integer,,Total bytes sent by the client,rename,long,false
 summary.bytes_sent,source.bytes,to_integer,,Total bytes sent by the client,rename,long,false
 grouped_details.src_host.name,source.domain,to_string,,Undocumented in Vectra API manual,rename,keyword,false
-src_host.id,source.id,to_string,,Undocumented in Vectra API manual,rename,long,false
-grouped_details.src_host.id,source.id,to_string,,Undocumented in Vectra API manual,rename,long,false
 src_ip,source.ip,to_string,,The source IP address of the host attributed to the security event,rename,ip,false
 grouped_details.src_host.ip,source.ip,to_string,,Undocumented in Vectra API manual,rename,ip,false
 threat,threat_score,to_integer,,The threat score attributed to the detection,rename,long,false
