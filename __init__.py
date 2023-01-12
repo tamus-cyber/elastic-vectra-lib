@@ -1,7 +1,6 @@
 """Main file for Elastic-Vectra Python library."""
 
 from elasticsearch import Elasticsearch
-from .mapping import _map_vectra_keys_to_ecs
 
 
 class ElasticVectra():
@@ -32,18 +31,17 @@ class ElasticVectra():
         """Get Elastic info."""
         return self.client.info()
 
-    def send_detection(self, detection: dict, index: str, pipeline: str = None):
-        """Send a detection to Elastic."""
+    def send_detection(self, detection: dict, index: str, pipeline: str = None, mapped: bool = True):
+        """Send a detection to Elastic.
+
+        Args:
+            detection (dict): Vectra detection to send to Elastic
+            index (str): Index to send detection to
+            pipeline (str): Pipeline to use (optional)
+            mapped (bool): If True, map the detection before sending. Otherwise, send as-is.
+        """
+        # If mapped is True, use the mapped index
+        if mapped:
+            # TODO: Import mapping function and map
+            pass
         self.client.index(index=index, document=detection, pipeline=pipeline)
-
-def map_vectra_keys_to_ecs(detection: dict) -> dict:
-    """Map Vectra keys to ECS keys.
-
-    Args:
-        detection (dict): Converts the keys of a Vectra detection to ECS keys.
-
-    Returns:
-        dict: A detection with ECS keys.
-    """
-
-    return _map_vectra_keys_to_ecs(detection)
