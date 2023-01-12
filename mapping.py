@@ -1,8 +1,22 @@
 """Vectra to ECS mapping file"""
 import os
+import ipaddress
 from csv import DictReader
 from typing import Any
 from searching import search_detection
+
+from loguru import logger
+logger.disable(__name__)
+
+
+def get_default_mapping():
+    """Returns the default mapping from the mapping.csv file"""
+    MAPPING_FILENAME = 'ecs_mapping.csv'
+    parent_filepath = os.path.dirname(__file__)
+    path_to_mapping = os.path.join(parent_filepath, MAPPING_FILENAME)
+    with open(path_to_mapping, 'r') as file:
+        return list(DictReader(file))
+
 
 def map_vectra_to_ecs(vectra_detection: dict, mapping: list[dict[str, str]]):
     ecs_document = {}
@@ -74,33 +88,15 @@ def format_data(data_points, format_action: str, strict: bool = True):
     able to be validly interpreted by Elastic.
 
     Parameters:
-        data (Any): the data to be formatted. Can be a single value or a list of values
-        format_action (str): the action to perform on the data
-            'to_integer', 'to_string', 'to_boolean': ensure the data to the specified type, if it is not already
-            'parse_timestamp': treated the same as to_string, Elastic will be parsing this on it's end, just ensure it is a string
-        'strict': if True, raise an error if the data cannot be formatted. If False, return any uncastable data as is
+        data (Any): The data to be formatted. Can be a single value or a list of values
+        format_action (str): The action to perform on the data
+            'to_integer', 'to_string', 'to_boolean': attempt to cast the data to the specified type
+            'filter_ip': drop any data that is not a valid IP address
+        'strict': If True, drop any data that can not be properly casted. If False, keep any uncastable data as-is
 
     Returns:
         (Any): the formatted data
     """
-    def cast(type_: type, value: Any):
-        """Cast the data to the specified type
-        If strict is False, return the value unchaned when it can't be casted.
-        
-        The point of this function is to allow sending malformed data to Elastic..
-        This allows Elastic to attempt to parse the data on it's end, allowing the burden to 
-        be shifted to the Elastic configuration to decide what happens when it gets data
-        that doesn't match the types it expected.
-
-        Tyler asked me to do it this way.
-        """
-        try:
-            return type_(value)
-        except ValueError as e:
-            if strict:
-                raise e
-            return value
-
     # if there is no format_action, return the data_points as is
     if not format_action:
         return data_points
@@ -109,21 +105,36 @@ def format_data(data_points, format_action: str, strict: bool = True):
     if not isinstance(data_points, list):
         data_points = [data_points]
 
-    if format_action == 'to_integer':
-        data_points = [cast(int, data_point) for data_point in data_points]
-    elif format_action in ('to_string', 'parse_timestamp'):
-        data_points = [cast(str, data_point) for data_point in data_points]
-    elif format_action == 'to_boolean':
-        data_points = [cast(bool, data_point) for data_point in data_points]
+    if format_action in ('to_integer', 'to_string', 'to_boolean'):
+        # if the format_action is to cast the data to a type, then use the flexible_cast function
+        type_ = {'to_integer': int, 'to_string': str, 'to_boolean': bool}[format_action]
+        data_points = [_flexible_cast(type_, value) for value in data_points]
+        data_points = [value for value in data_points if value is not None]
     
+    elif format_action == 'filter_ip':
+        data_points = [value for value in data_points if _is_valid_ip(value)]
+
     if len(data_points) == 1:
         data_points = data_points[0]
 
     return data_points
 
-def get_default_mapping():
-    MAPPING_FILENAME = 'ecs_mapping.csv'
-    parent_filepath = os.path.dirname(__file__)
-    path_to_mapping = os.path.join(parent_filepath, MAPPING_FILENAME)
-    with open(path_to_mapping, 'r') as file:
-        return list(DictReader(file))
+
+def _flexible_cast(type_: type, value: Any, strict: bool = True):
+        """Attempts to cast the data to the specified type
+        If the cast fails, returns None if strict is True, otherwise returns the data as-is
+        """
+        try:
+            return type_(value)
+        except ValueError as e:
+            logger.error(f'Failed to cast {value} to {type_}: {e}')
+            return None if strict else value
+
+
+def _is_valid_ip(value: str):
+    """Returns True if the value is a valid IP address, otherwise returns False"""
+    try:
+        ipaddress.ip_address(value)
+        return True
+    except ValueError:
+        return False
