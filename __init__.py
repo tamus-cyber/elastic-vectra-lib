@@ -1,6 +1,7 @@
 """Main file for Elastic-Vectra Python library."""
 
 from elasticsearch import Elasticsearch
+from .mapping import map_vectra_to_ecs, get_default_mapping
 
 
 class ElasticVectra():
@@ -26,12 +27,13 @@ class ElasticVectra():
                 verify_certs=verify_certs,
                 hosts=[self.host]
             )
+        self.mapping = get_default_mapping()
 
     def get_info(self):
         """Get Elastic info."""
         return self.client.info()
 
-    def send_detection(self, detection: dict, index: str, pipeline: str = None, mapped: bool = True):
+    def send_detection(self, detection: dict, index: str, pipeline: str = None, mapped: bool = True, extra_fields: dict = None):
         """Send a detection to Elastic.
 
         Args:
@@ -40,8 +42,7 @@ class ElasticVectra():
             pipeline (str): Pipeline to use (optional)
             mapped (bool): If True, map the detection before sending. Otherwise, send as-is.
         """
-        # If mapped is True, use the mapped index
+        # If mapped is True, map the detection
         if mapped:
-            # TODO: Import mapping function and map
-            pass
+            detection = map_vectra_to_ecs(detection, self.mapping)
         self.client.index(index=index, document=detection, pipeline=pipeline)
