@@ -7,32 +7,22 @@ from csv import DictReader
 def map_vectra_to_ecs(vectra_detection: dict, mapping: list[dict[str, str]]):
     ecs_document = {}
 
-    # Iterate over each mapping_item in the mapping
     for map_item in mapping:
-
-        # if the mapping_item is static, we don't need to search for it just add the value to the ecs_document
+        # if the mapping_item is static, then the "source_field" is actually static value to add to every document that uses this mapping
         if map_item['is_static'].lower() == 'true':
             # for static values, the source_field is the value to add
-            static_value = map_item['source_field']
-            formatted_static_value = format_data(static_value, map_item['format_action'])
-            add_to_ecs_document(ecs_document, map_item['destination_field'], formatted_static_value)
+            source_data = map_item['source_field']
+        else:
+            source_data = search_detection(vectra_detection, map_item['source_field'])
 
-        # search for the data
-        search_results = search_detection(vectra_detection, map_item['source_field'])
-
-        # if there is no data to add, skip this mapping_item
-        if not search_results:
+        if not source_data:
             continue
 
-        # format the data as needed
-        formatted_results = format_data(search_results, map_item['format_action'])
-
-        # if the destination_field is not specified, use the source_field
-        destination_field: str = map_item['destination_field'] if map_item['destination_field'] else map_item['source_field']
-
-        # add the data to the ecs_document
-        force_array: bool = map_item['format_action'].lower() == 'to_array'
-        add_to_ecs_document(ecs_document, destination_field, formatted_results, force_array)
+        # format the data as specified by the mapping
+        formatted_data = format_data(source_data, map_item['format_action'], strict = False)
+        # if the destination_field is not specified, default to keeping the same path as the source
+        destination_field: str = map_item['destination_field'] if map_item['destination_field'] != '' else map_item['source_field']
+        add_to_ecs_document(ecs_document, destination_field, formatted_data)
 
     return ecs_document
 
