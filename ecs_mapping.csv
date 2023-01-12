@@ -17,7 +17,7 @@ first_timestamp,event.start,parse_timestamp,ISO8601,The timestamp when the event
 detection_type,event.type,to_string,,The name of the threat detected,rename,keyword,false
 url,event.url,to_string,,The URL that links directly to this record via the API,rename,keyword,false
 src_host.name,host.hostname,to_string,,Undocumented in Vectra API manual,rename,keyword,false
-src_host.id,host.id,to_integer,,Undocumented in Vectra API manual,rename,long,false
+src_host.id,host.id,to_string,,Undocumented in Vectra API manual,rename,long,false
 src_host.ip,host.ip,to_string,,Undocumented in Vectra API manual,rename,ip,false
 grouped_details.protocol,network.protocol,to_string,,Protocol used in the communications,rename,keyword,false
 summary.protocols,network.protocol,to_string,,Protocol used in the communications,rename,keyword,false
