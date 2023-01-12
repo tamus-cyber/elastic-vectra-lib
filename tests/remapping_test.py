@@ -1,7 +1,7 @@
 """Test Vectra to ECS remapping"""
 # pylint: disable=wrong-import-position, import-error, too-few-public-methods, no-self-use
 # Import the remapping function from __init__.py
-# from elastic_vectra_lib import map_vectra_to_ecs, get_default_mapping
+# from elastic_vectra_exporter import map_vectra_to_ecs, get_default_mapping
 
 
 # class TestRemapping:

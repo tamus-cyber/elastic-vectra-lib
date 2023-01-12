@@ -42,13 +42,13 @@ First make an ElasticVectraExporter object. There are two ways to do this depend
 Self-hosted:
 
 ```python
-client = elastic_vectra_lib.ElasticVectra(host="https://elastic_url:9200", username="user_here", password="password_here")
+client = elastic_vectra_exporter.ElasticVectra(host="https://elastic_url:9200", username="user_here", password="password_here")
 ```
 
 Elastic Cloud:
 
 ```python
-client = elastic_vectra_lib.ElasticVectra(cloud_id="XXXXX", username="user_here", password="password_here")
+client = elastic_vectra_exporter.ElasticVectra(cloud_id="XXXXX", username="user_here", password="password_here")
 ```
 
 For development environments, you may also use `verify_certs=False` as a parameter when SSL verification is not set up yet.
