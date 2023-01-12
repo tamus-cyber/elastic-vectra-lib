@@ -141,6 +141,7 @@ combined.json
 
 # Internal testing
 examples.py
+*_test_map.json
 parse_sample.py
 todo.md
 internal/
