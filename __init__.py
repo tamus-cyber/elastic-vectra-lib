@@ -1,7 +1,7 @@
 """Main file for Elastic-Vectra Python library."""
 
 from elasticsearch import Elasticsearch
-from .mapping import map_vectra_to_ecs, get_default_mapping
+from .mapping import map_vectra_to_ecs, get_default_mapping, add_to_ecs_document
 
 
 class ElasticVectra():
@@ -41,8 +41,16 @@ class ElasticVectra():
             index (str): Index to send detection to
             pipeline (str): Pipeline to use (optional)
             mapped (bool): If True, map the detection before sending. Otherwise, send as-is.
+            extra_fields (dict): Extra fields to add to the mapped Elastic document before sending. (optional)
+                                Should be a dictionary of the form {path: value}
         """
         # If mapped is True, map the detection
         if mapped:
             detection = map_vectra_to_ecs(detection, self.mapping)
+
+        # If extra_fields is set, add them to the detection
+        if extra_fields:
+            for path, value in extra_fields.items():
+                add_to_ecs_document(detection, path, value)
+
         self.client.index(index=index, document=detection, pipeline=pipeline)
