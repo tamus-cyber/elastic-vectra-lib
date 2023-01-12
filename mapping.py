@@ -4,14 +4,14 @@ from searching import search_detection
 from csv import DictReader
 
 
-def map_vectra_to_ecs(vectra_detection, mapping):
+def map_vectra_to_ecs(vectra_detection: dict, mapping: list[dict[str, str]]):
     ecs_document = {}
 
     # Iterate over each mapping_item in the mapping
     for map_item in mapping:
 
         # if the mapping_item is static, we don't need to search for it just add the value to the ecs_document
-        if map_item['is_static']:
+        if map_item['is_static'].lower() == 'true':
             # for static values, the source_field is the value to add
             static_value = map_item['source_field']
             formatted_static_value = format_data(static_value, map_item['format_action'])
@@ -27,8 +27,11 @@ def map_vectra_to_ecs(vectra_detection, mapping):
         # format the data as needed
         formatted_results = format_data(search_results, map_item['format_action'])
 
+        # if the destination_field is not specified, use the source_field
+        destination_field = map_item['destination_field'] if map_item['destination_field'] else map_item['source_field']
+
         # add the data to the ecs_document
-        add_to_ecs_document(ecs_document, map_item['destination_field'], formatted_results)
+        add_to_ecs_document(ecs_document, destination_field, formatted_results)
 
     return ecs_document
 
@@ -100,6 +103,8 @@ def format_data(data_points, format_action: str):
     
     if format_action != 'to_array' and len(data_points) == 1:
         data_points = data_points[0]
+
+    return data_points
 
 
 
