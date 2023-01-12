@@ -132,5 +132,15 @@ dmypy.json
 detection_files
 detection_files*
 combined.json
+
+# Secrets
 .private_mapping.csv
+
+# CSV/Excel lock files
 .~lock*
+
+# Internal testing
+examples.py
+parse_sample.py
+todo.md
+internal/
