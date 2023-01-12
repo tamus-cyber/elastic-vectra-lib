@@ -22,3 +22,4 @@ grouped_details.events.target_domains,destination.address,to_array,,List of targ
 summary.target_domains,destination.address,to_array,,List of target domains,rename,keyword,false
 vectra,observer.vendor,to_string,,Static value: vectra,rename,keyword,true
 nids,observer.type,to_string,,Static value: nids,rename,keyword,true
+8.6.0,ecs.version,to_string,,https://www.elastic.co/guide/en/ecs/current/ecs-ecs.html,rename,keyword,true
