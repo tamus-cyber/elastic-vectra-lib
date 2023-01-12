@@ -32,14 +32,9 @@ class ElasticVectra():
         """Get Elastic info."""
         return self.client.info()
 
-    def send_detection(self, detection: dict, index: str, pipeline: str):
+    def send_detection(self, detection: dict, index: str, pipeline: str = None):
         """Send a detection to Elastic."""
         self.client.index(index=index, document=detection, pipeline=pipeline)
-
-    def send_detections(self, detections: list, index: str, pipeline: str):
-        """Send a list of detections to Elastic."""
-        for detection in detections:
-            self.send_detection(detection, index, pipeline)
 
 def map_vectra_keys_to_ecs(detection: dict) -> dict:
     """Map Vectra keys to ECS keys.
