@@ -3,7 +3,7 @@ import os
 import ipaddress
 from csv import DictReader
 from typing import Any
-from searching import search_detection
+from .searching import search_detection
 
 from loguru import logger
 logger.disable(__name__)
