@@ -16,6 +16,7 @@ grouped_details.dst_ips,destination.ip,filter_ip,,The source IP address of the h
 8.6.0,ecs.version,to_string,,https://www.elastic.co/guide/en/ecs/current/ecs-ecs.html,rename,keyword,true
 detection_category,event.category,to_string,,The category of the vname attack detected,rename,keyword,false
 last_timestamp,event.end,parse_timestamp,ISO8601,The timestamp when the event was last detected,rename,date,false
+id,event.id,to_string,,The Vectra detection ID,rename,keyword,false
 first_timestamp,event.start,parse_timestamp,ISO8601,The timestamp when the event was first detected (duplicate),rename,date,false
 detection_type,event.type,to_string,,The name of the threat detected,rename,keyword,false
 url,event.url,to_string,,The URL that links directly to this record via the API,rename,keyword,false
